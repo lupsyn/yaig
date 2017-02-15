@@ -7,7 +7,7 @@ package com.tigerspike.business.views;
  * @since 15/02/2017
  */
 
-public interface BaseView <T>{
+public interface BaseView <P>{
 
-    void setPresenter(T presenter);
+    void setPresenter(P presenter);
 }

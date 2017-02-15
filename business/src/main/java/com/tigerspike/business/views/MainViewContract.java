@@ -13,6 +13,7 @@ import java.util.List;
 public class MainViewContract {
     public interface View extends BaseView<Presenter> {
 
+
         void showLoading();
 
         void hideLoading();
@@ -23,7 +24,10 @@ public class MainViewContract {
 
     }
 
+
     public interface Presenter extends BasePresenter {
+
+        void initialize();
 
         void retriveImages();
 
@@ -31,9 +35,16 @@ public class MainViewContract {
 
         void shareImage(FlickrImage image);
 
-        void saveImage(FlickrImage image);
-
         void openImage(FlickrImage image);
 
+        void saveImage(FlickrImage image);
     }
+
+    public interface BaseState {
+    }
+
+    public interface MainViewState extends BaseState {
+        List<FlickrImage> getImages();
+    }
+
 }

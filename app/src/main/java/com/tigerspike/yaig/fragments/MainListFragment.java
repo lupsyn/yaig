@@ -1,21 +1,25 @@
 package com.tigerspike.yaig.fragments;
 
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.tigerspike.business.entity.FlickrImage;
-import com.tigerspike.business.logic.MainViewPresenter;
 import com.tigerspike.business.views.MainViewContract;
+import com.tigerspike.business.views.MainViewState;
 import com.tigerspike.yaig.R;
 import com.tigerspike.yaig.adapters.MainAdapter;
 import com.tigerspike.yaig.utils.RecyclerItemClickListener;
@@ -36,12 +40,21 @@ import butterknife.ButterKnife;
  */
 public class MainListFragment extends Fragment implements MainViewContract.View {
 
-//    @BindView(R.id.recycleview)
+    @BindView(R.id.recycleview)
     RecyclerViewEmptySupport recycleView;
-//    @BindView(R.id.emptylist)
+    @BindView(R.id.emptylist)
     TextView mEventEmpty;
-//    @BindView(R.id.swipeRefreshLayout)
+    @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeContainer;
+
+    public interface ListCallback {
+        void share(FlickrImage image);
+
+        void save(FlickrImage image);
+
+        void open(FlickrImage image);
+
+    }
 
     private MainAdapter listAdapter;
     private MainViewContract.Presenter mMainViewPresenter;
@@ -52,6 +65,7 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
 
     private boolean mStatus = true;
     private boolean isRefreshing = false;
+    private MainViewState mState;
 
     public MainListFragment() {
         // Requires empty public constructor
@@ -61,28 +75,24 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
         return new MainListFragment();
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-//        View view = inflater.inflate(R.layout.main_list_fr, container, false);
-//        ButterKnife.bind(this, view);
-//        recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        listAdapter = new MainAdapter(getContext(), new ArrayList<FlickrImage>());
-//        recycleView.setAdapter(listAdapter);
-//        recycleView.setEmptyView(mEventEmpty);
-
         View view = inflater.inflate(R.layout.main_list_fr, container, false);
-        recycleView = (RecyclerViewEmptySupport) view.findViewById(R.id.recycleview);
-        mEventEmpty = (TextView) view.findViewById(R.id.emptylist);
+        ButterKnife.bind(this, view);
         recycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        listAdapter = new MainAdapter(getContext(), new ArrayList<FlickrImage>());
+        listAdapter = new MainAdapter(getContext(), new ArrayList<FlickrImage>(), mListCallback);
         recycleView.setAdapter(listAdapter);
-        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         recycleView.setEmptyView(mEventEmpty);
-
-//        mMainListPresenter = new MainListPresenter(this);
-//        mMainListPresenter.onCreateView();
+        mState = new MainViewState(mClientSets);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMainViewPresenter.onViewAttached(this);
+            }
+        }, 500);
 
         initViews();
         return view;
@@ -120,7 +130,7 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
 
     @Override
     public void onDestroy() {
-        mMainViewPresenter.destroy();
+        mMainViewPresenter.onViewDetached(mState);
         super.onDestroy();
 
     }
@@ -128,10 +138,16 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
 
     @Override
     public void onResume() {
-        mMainViewPresenter.initialize();
+//        mMainViewPresenter.initialize();
         super.onResume();
     }
 
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+
+        super.onConfigurationChanged(newConfig);
+    }
 
     @Override
     public void showLoading() {
@@ -149,6 +165,7 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
         getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
+                                            mState.setImages(imageList);
                                             mClientSets = new ArrayList<FlickrImage>();
                                             mClientSets.addAll(imageList);
                                             if (swipeContainer.isRefreshing()) {
@@ -164,15 +181,15 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
                                                 mListener = null;
                                             }
                                             listAdapter.notifyDataSetChanged();
-                                            mListener = new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
-                                                @Override
-                                                public void onItemClick(View view, int position) {
-//                                                    if (!isRefreshing)
-//                                                        setChoosen(clientSetList.get(position));
-
-                                                }
-                                            });
-                                            recycleView.addOnItemTouchListener(mListener);
+//                                            mListener = new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
+//                                                @Override
+//                                                public void onItemClick(View view, int position) {
+////                                                    if (!isRefreshing)
+////                                                        setChoosen(clientSetList.get(position));
+//
+//                                                }
+//                                            });
+//                                            recycleView.addOnItemTouchListener(mListener);
                                         }
                                     }
 
@@ -194,6 +211,23 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
 
     @Override
     public void setPresenter(MainViewContract.Presenter presenter) {
-        this.mMainViewPresenter = presenter;
+        mMainViewPresenter = presenter;
     }
+
+    private ListCallback mListCallback = new ListCallback() {
+        @Override
+        public void share(FlickrImage image) {
+            mMainViewPresenter.shareImage(image);
+        }
+
+        @Override
+        public void save(FlickrImage image) {
+            mMainViewPresenter.saveImage(image);
+        }
+
+        @Override
+        public void open(FlickrImage image) {
+            mMainViewPresenter.openImage(image);
+        }
+    };
 }

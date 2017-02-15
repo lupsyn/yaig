@@ -7,12 +7,15 @@
 package com.tigerspike.business.controller;
 
 import com.tigerspike.business.entity.FlickrImage;
+import com.tigerspike.business.views.MainViewState;
+
+import java.util.List;
 
 public interface IDataController {
 
-    void saveImage(FlickrImage image);
+    void storeState(MainViewState state);
 
-    void shareImage(FlickrImage image);
+    MainViewState getStoreState();
 
-    void openImage(FlickrImage image);
+    void removeState();
 }

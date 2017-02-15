@@ -3,6 +3,7 @@ package com.tigerspike.yaig;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
@@ -16,7 +17,9 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tigerspike.business.logic.MainViewPresenter;
+import com.tigerspike.data.LocalDataController;
 import com.tigerspike.data.LoggerController;
+import com.tigerspike.data.SharingDataController;
 import com.tigerspike.network.NetworkController;
 import com.tigerspike.yaig.fragments.MainListFragment;
 import com.tigerspike.yaig.utils.ActivityUtils;
@@ -39,22 +42,33 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mPermissionManager = new PermissionsManager(this);
+
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+        mPermissionManager = new PermissionsManager(this);
+        //TODO: should be handled in another manner as guide design lines, when
+        //i require the action, i have to require also permissions not at startup!
+        mPermissionManager.canIRun();
 
-
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);
-
+        NetworkController networkConnectivity = new NetworkController(this);
+        LoggerController loggerController = new LoggerController();
+        LocalDataController localDataController = new LocalDataController(this);
+        SharingDataController sharingDataController = new SharingDataController(this);
 
         MainListFragment mMainListFragment = (MainListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (mMainListFragment == null) {
             mMainListFragment = MainListFragment.newInstance();
+            mPresenter = new MainViewPresenter(networkConnectivity, loggerController, localDataController, sharingDataController, mMainListFragment);
+            mMainListFragment.setPresenter(mPresenter);
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), mMainListFragment, R.id.fragment_container);
         }
-        NetworkController networkConnectivity = new NetworkController(this);
-        LoggerController loggerController = new LoggerController();
+        //Becouse of rotation
+        if (mPresenter == null) {
+            //Create a new one.
+            mPresenter = new MainViewPresenter(networkConnectivity, loggerController, localDataController, sharingDataController, mMainListFragment);
+            mMainListFragment.setPresenter(mPresenter);
+        }
 
-        mPresenter = new MainViewPresenter(networkConnectivity, loggerController, null, mMainListFragment);
+
     }
 
     @Override
@@ -90,20 +104,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
-        return super.onOptionsItemSelected(item);
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
-
 
 }
 

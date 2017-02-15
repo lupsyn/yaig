@@ -29,8 +29,9 @@ public class PermissionsManager {
         } else {
             ActivityCompat.requestPermissions(mActivity,
                     new String[]{
-                            Manifest.permission.INTERNET
-                    }, 1);
+                            Manifest.permission.INTERNET,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    }, 2);
         }
 
         return false;
@@ -41,7 +42,8 @@ public class PermissionsManager {
      *
      */
     public boolean hasAllPermissions() {
-        return (hasPermission(mActivity, Manifest.permission.INTERNET)
+        return (hasPermission(mActivity, Manifest.permission.INTERNET) &&
+                hasPermission(mActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         );
     }
 

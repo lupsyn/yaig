@@ -6,9 +6,14 @@ package com.tigerspike.business.views;
  * @author enricodelzotto
  * @since 15/02/2017
  */
-public interface BasePresenter {
+public interface BasePresenter<V,S> {
 
-    void initialize();
+    void onViewAttached(V view);
 
-    void destroy();
+    void onViewDetached(S state);
+
+    void onDestroyed();
+
+
+
 }
