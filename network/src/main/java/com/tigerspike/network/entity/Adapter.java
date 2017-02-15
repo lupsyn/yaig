@@ -1,6 +1,7 @@
 package com.tigerspike.network.entity;
 
 import com.tigerspike.business.entity.FlickrImage;
+import com.tigerspike.network.utils.DateUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,9 +30,9 @@ public class Adapter {
         FlickrImage toRet = new FlickrImage(dto.getTitle(),
                 dto.getDirectMedia().getLink(),
                 dto.getLink(),
-                dto.getDate_taken(),
+                DateUtil.formatHumanReadable(DateUtil.parseDate(dto.getDate_taken())),
                 dto.getPublished(),
-                dto.getAuthor(),
+                dto.getAuthor().replace("nobody@flickr.com", "").replace("(", "").replace(")", "").replace("\"", ""),
                 dto.getAuthor_id(),
                 dto.getTags());
         return toRet;

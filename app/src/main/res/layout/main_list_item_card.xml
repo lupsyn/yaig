@@ -26,9 +26,92 @@
             />
 
         <LinearLayout
-            android:id="@+id/card_title_layoud"
+            android:id="@+id/card_author_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_thumbnail"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/card_author"
+                fontPath="fonts/Roboto-Light.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textSize="14dp"/>
+
+            <TextView
+                android:id="@+id/card_date_taken"
+                fontPath="fonts/Roboto-Light.ttf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:textSize="14dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/card_author_layout"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:background="@android:color/darker_gray"
+            android:orientation="horizontal"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_line"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/ic_share_black"
+                />
+
+            <ImageView
+
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+
+                android:padding="8dp"
+                android:src="@drawable/ic_launch_black"
+                />
+
+            <ImageView
+
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/ic_get_app_black"
+                />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/card_title_layout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_above="@+id/card_author_layout"
+            android:layout_alignParentStart="true"
             android:background="#80000000"
             android:orientation="vertical">
 
@@ -37,7 +120,7 @@
                 fontPath="fonts/Roboto-Medium.ttf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/card_title_layoud"
+                android:layout_below="@+id/card_title_layout"
                 android:layout_marginLeft="8dp"
                 android:maxLines="1"
                 android:padding="8dp"
@@ -45,68 +128,6 @@
                 android:textSize="22dp"
                 />
 
-
-        </LinearLayout>
-
-
-        <TextView
-            android:id="@+id/card_author"
-            fontPath="fonts/Roboto-Light.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/card_thumbnail"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:maxLines="1"
-            android:padding="8dp"
-            android:textSize="14dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/card_author"
-            android:orientation="horizontal"
-            >
-
-
-            <TextView
-
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_weight="1"
-                android:maxLines="1"
-                android:padding="8dp"
-                android:text="@string/save"
-                android:textColor="@color/colorAccent"
-                android:textSize="18dp"
-                android:textStyle="bold"/>
-
-            <TextView
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="1"
-                android:padding="8dp"
-                android:text="@string/share"
-                android:textColor="@color/colorAccent"
-                android:textSize="18dp"
-                android:textStyle="bold"/>
-
-            <TextView
-                fontPath="fonts/Roboto-Medium.ttf"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:maxLines="1"
-                android:padding="8dp"
-                android:text="@string/open"
-                android:textColor="@color/colorAccent"
-                android:textSize="18dp"
-                android:textStyle="bold"/>
 
         </LinearLayout>
     </RelativeLayout>

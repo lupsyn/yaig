@@ -18,9 +18,16 @@ public class DateUtil {
     //2017-02-02T15:57:10-08:00
     private static final String ISO_8601_24H_FULL_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
     private static final SimpleDateFormat mDateFormat = new SimpleDateFormat(ISO_8601_24H_FULL_FORMAT, Locale.getDefault());
+    private static final String HUMAN_READABLE = "yyyy-MM-dd HH:mm:ss";
+    private static final SimpleDateFormat mDateFormatHuman = new SimpleDateFormat(HUMAN_READABLE, Locale.getDefault());
+
 
     public static String formatDate(Date date) {
         return mDateFormat.format(date);
+    }
+
+    public static String formatHumanReadable(Date date) {
+        return mDateFormatHuman.format(date);
     }
 
     // http://www.cl.cam.ac.uk/~mgk25/iso-time.html
@@ -65,7 +72,7 @@ public class DateUtil {
 
 
     public static boolean isExpired(String date) {
-        return areGreaterThan( new Date(),parseDate(date));
+        return areGreaterThan(new Date(), parseDate(date));
     }
 
     public static String formatDatePlusSecond(long sec) {

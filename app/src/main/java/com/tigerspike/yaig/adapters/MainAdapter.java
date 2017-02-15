@@ -45,6 +45,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         FlickrImage flickrImage = mSetList.get(position);
         holder.mTextTitle.setText(flickrImage.getTitle());
         holder.mTextAuthor.setText(flickrImage.getAuthor());
+        holder.mDateTaken.setText(flickrImage.getTimeTaken());
         if (flickrImage.getLink() != null)
             Picasso.with(mContext).load(flickrImage.getLink()).into(holder.mImageView);
 
@@ -59,6 +60,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         ImageView mImageView;
         TextView mTextTitle;
         TextView mTextAuthor;
+        TextView mDateTaken;
 
 
         public ViewHolder(View v) {
@@ -66,7 +68,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             mImageView = (ImageView) v.findViewById(R.id.card_thumbnail);
             mTextTitle = (TextView) v.findViewById(R.id.card_title);
             mTextAuthor = (TextView) v.findViewById(R.id.card_author);
-
+            mDateTaken = (TextView) v.findViewById(R.id.card_date_taken);
 
         }
     }
