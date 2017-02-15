@@ -1,7 +1,7 @@
 package com.tigerspike.data.utils;
 
 /**
- * Copyright (c) 2016. SmartFocus UK Limited. All rights reserved.
+ * Copyright (c) 2016.  All rights reserved.
  *
  * @author enricodelzotto
  * @since 23/03/16

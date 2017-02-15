@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 
 
 /**
- * Copyright (c) 2016. SmartFocus UK Limited. All rights reserved.
+ * Copyright (c) 2016.  All rights reserved.
  *
  * @author enricodelzotto
  * @since 22/03/16

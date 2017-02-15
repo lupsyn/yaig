@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -40,8 +41,6 @@ public class SharingDataController implements ISharingController {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 try {
-
-
                     File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "/" + image.getTitle() + ".png");
                     file.createNewFile();
                     FileOutputStream fOut = new FileOutputStream(file);
@@ -49,9 +48,9 @@ public class SharingDataController implements ISharingController {
                     fOut.flush();
                     fOut.close();
                     file.setReadable(true, false);
-                    callback.onSuccess(Environment.DIRECTORY_PICTURES + "/" +
-                            ((image.getTitle() == null || image.getTitle().trim().isEmpty()) ? UUID.randomUUID().toString() : image.getTitle().trim())
-                            + ".png");
+                    String imgSaved = MediaStore.Images.Media.insertImage(mContext.getContentResolver(), file.getAbsolutePath(),
+                            UUID.randomUUID().toString() + ".png", image.getTitle());
+                    callback.onSuccess(imgSaved);
                 } catch (Exception e) {
                     callback.onError(e.getMessage().toString());
                     e.printStackTrace();
@@ -62,7 +61,7 @@ public class SharingDataController implements ISharingController {
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
-
+                callback.onError(errorDrawable.toString());
             }
 
             @Override

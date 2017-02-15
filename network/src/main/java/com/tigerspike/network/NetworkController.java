@@ -19,7 +19,7 @@ import rx.schedulers.Schedulers;
 import static com.tigerspike.network.entity.Adapter.convertListFlickrImageDto;
 
 /**
- * Copyright (c) 2016. SmartFocus UK Limited. All rights reserved.
+ * Copyright (c) 2016.  All rights reserved.
  *
  * @author enricodelzotto
  * @since 14/02/2017

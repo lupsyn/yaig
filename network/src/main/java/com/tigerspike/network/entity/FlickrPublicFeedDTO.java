@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Copyright (c) 2016. SmartFocus UK Limited. All rights reserved.
+ * Copyright (c) 2016.  All rights reserved.
  *
  * @author enricodelzotto
  * @since 14/02/2017
