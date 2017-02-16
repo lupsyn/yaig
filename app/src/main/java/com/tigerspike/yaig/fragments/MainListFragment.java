@@ -18,10 +18,12 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.tigerspike.business.entity.FlickrImage;
+import com.tigerspike.business.logic.IPermissionCallback;
 import com.tigerspike.business.views.MainViewContract;
 import com.tigerspike.business.views.MainViewState;
 import com.tigerspike.yaig.R;
 import com.tigerspike.yaig.adapters.MainAdapter;
+import com.tigerspike.yaig.utils.PermissionsManager;
 import com.tigerspike.yaig.utils.RecyclerItemClickListener;
 import com.tigerspike.yaig.utils.RecyclerViewEmptySupport;
 
@@ -47,6 +49,9 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeContainer;
 
+    private PermissionsManager mPermissionManager;
+    public IPermissionCallback mPermissionCallback;
+
     public interface ListCallback {
         void share(FlickrImage image);
 
@@ -55,6 +60,7 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
         void open(FlickrImage image);
 
     }
+
 
     private MainAdapter listAdapter;
     private MainViewContract.Presenter mMainViewPresenter;
@@ -87,6 +93,7 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
         recycleView.setAdapter(listAdapter);
         recycleView.setEmptyView(mEventEmpty);
         mState = new MainViewState(mClientSets);
+        mPermissionManager = new PermissionsManager(getActivity());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -176,20 +183,8 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
                                             listAdapter.addAll(mClientSets, mStatus);
                                             // Now we call setRefreshing(false) to signal refresh has finished
                                             swipeContainer.setRefreshing(false);
-                                            if (mListener != null) {
-                                                recycleView.removeOnItemTouchListener(mListener);
-                                                mListener = null;
-                                            }
                                             listAdapter.notifyDataSetChanged();
-//                                            mListener = new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
-//                                                @Override
-//                                                public void onItemClick(View view, int position) {
-////                                                    if (!isRefreshing)
-////                                                        setChoosen(clientSetList.get(position));
-//
-//                                                }
-//                                            });
-//                                            recycleView.addOnItemTouchListener(mListener);
+
                                         }
                                     }
 
@@ -209,10 +204,24 @@ public class MainListFragment extends Fragment implements MainViewContract.View 
     }
 
 
+    public IPermissionCallback getPermissionCallback() {
+        return mPermissionCallback;
+    }
+
+    @Override
+    public void requirePermission(IPermissionCallback callback) {
+        mPermissionCallback = callback;
+        if (mPermissionManager.canIRun()) {
+            mPermissionCallback.onAllPermissionAcquired();
+        }
+    }
+
+
     @Override
     public void setPresenter(MainViewContract.Presenter presenter) {
         mMainViewPresenter = presenter;
     }
+
 
     private ListCallback mListCallback = new ListCallback() {
         @Override

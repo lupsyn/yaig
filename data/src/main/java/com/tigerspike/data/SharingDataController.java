@@ -75,13 +75,9 @@ public class SharingDataController implements ISharingController {
 
     @Override
     public void shareImage(final FlickrImage image, final ISharedCallback callback) {
-
-
         Picasso.with(mContext).load(image.getLink()).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-
-
                 try {
                     File file = new File(mContext.getExternalCacheDir(), image.getTitle() + ".png");
                     FileOutputStream fOut = new FileOutputStream(file);
@@ -99,8 +95,6 @@ public class SharingDataController implements ISharingController {
                     callback.onError(e.getMessage().toString());
                     e.printStackTrace();
                 }
-
-
             }
 
             @Override

@@ -1,6 +1,7 @@
 package com.tigerspike.business.views;
 
 import com.tigerspike.business.entity.FlickrImage;
+import com.tigerspike.business.logic.IPermissionCallback;
 
 import java.util.List;
 
@@ -13,7 +14,6 @@ import java.util.List;
 public class MainViewContract {
     public interface View extends BaseView<Presenter> {
 
-
         void showLoading();
 
         void hideLoading();
@@ -21,6 +21,8 @@ public class MainViewContract {
         void refreshImages(List<FlickrImage> imageList);
 
         void showToast(String msg);
+
+        void requirePermission(IPermissionCallback callback);
 
     }
 

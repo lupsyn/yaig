@@ -102,39 +102,61 @@ public class MainViewPresenter implements MainViewContract.Presenter {
     }
 
     @Override
-    public void shareImage(FlickrImage image) {
-        mView.showLoading();
-        mSharingController.shareImage(image, new ISharedCallback() {
+    public void shareImage(final FlickrImage image) {
+        mView.requirePermission(new IPermissionCallback() {
             @Override
-            public void onSuccess() {
-                mView.hideLoading();
+            public void onAllPermissionAcquired() {
+                mView.showLoading();
+                mSharingController.shareImage(image, new ISharedCallback() {
+                    @Override
+                    public void onSuccess() {
+                        mView.hideLoading();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        mView.hideLoading();
+                        mView.showToast(error);
+                    }
+                });
             }
 
             @Override
-            public void onError(String error) {
-                mView.hideLoading();
-                mView.showToast(error);
+            public void onDenied() {
+                mView.showToast("Not allowed!");
             }
         });
+
     }
 
     @Override
-    public void saveImage(FlickrImage image) {
-        mView.showLoading();
-        mSharingController.saveImage(image, new ISaveController() {
+    public void saveImage(final FlickrImage image) {
+        mView.requirePermission(new IPermissionCallback() {
             @Override
-            public void onSuccess(String savedOn) {
+            public void onAllPermissionAcquired() {
+                mView.showLoading();
+                mSharingController.saveImage(image, new ISaveController() {
+                    @Override
+                    public void onSuccess(String savedOn) {
 
-                mView.showToast("Image saved on: " + savedOn);
-                mView.hideLoading();
+                        mView.showToast("Image saved on: " + savedOn);
+                        mView.hideLoading();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        mView.hideLoading();
+                        mView.showToast(error);
+                    }
+                });
             }
 
             @Override
-            public void onError(String error) {
-                mView.hideLoading();
-                mView.showToast(error);
+            public void onDenied() {
+                mView.showToast("Not allowed!");
             }
         });
+
     }
 
     @Override

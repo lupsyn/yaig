@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -42,13 +43,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
         mPermissionManager = new PermissionsManager(this);
-        //TODO: should be handled in another manner as guide design lines, when
-        //i require the action, i have to require also permissions not at startup!
-        mPermissionManager.canIRun();
-
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
         NetworkController networkConnectivity = new NetworkController(this);
         LoggerController loggerController = new LoggerController();
         LocalDataController localDataController = new LocalDataController(this);
@@ -67,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
             mPresenter = new MainViewPresenter(networkConnectivity, loggerController, localDataController, sharingDataController, mMainListFragment);
             mMainListFragment.setPresenter(mPresenter);
         }
-
 
     }
 
@@ -102,6 +97,21 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (mPermissionManager.hasAllPermissions()) {
+            if (mMainListFragment != null) {
+                mMainListFragment.getPermissionCallback().onAllPermissionAcquired();
+            }
+        } else {
+            if (mMainListFragment != null) {
+                mMainListFragment.getPermissionCallback().onDenied();
+            }
+        }
+    }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
