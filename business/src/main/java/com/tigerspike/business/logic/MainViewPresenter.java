@@ -12,6 +12,7 @@ import com.tigerspike.business.entity.FlickrImage;
 import com.tigerspike.business.views.MainViewContract;
 import com.tigerspike.business.views.MainViewState;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
@@ -35,6 +36,14 @@ public class MainViewPresenter implements MainViewContract.Presenter {
                              ISharingController sharingController,
                              MainViewContract.View view
     ) {
+
+        if (networkController == null
+                || loggerController == null
+                || dataController == null
+                || sharingController == null
+                || view == null) {
+            throw new InvalidParameterException("networkController cannot be null");
+        }
         mNetworkController = networkController;
         mLoggerController = loggerController;
         mDataController = dataController;
